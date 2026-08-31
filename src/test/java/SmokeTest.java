@@ -6,7 +6,7 @@ public class SmokeTest {
 
     @Test
     void test() {
-        assertEquals(3, 1+1);
+        assertEquals(2, 1+1);
     }
 
 }
