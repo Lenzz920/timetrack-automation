@@ -1,7 +1,8 @@
 # CREATE
 curl -i -X POST http://localhost:3000/api/sessions -H "Content-Type: application/json" -d '{"date":"2026-08-29","start":"16:00","end":"17:00","categoryId":"study","note":"x"}'
 
-# READ (everything)
+# READ 
+curl -s http://localhost:3000/api/data //everything
 curl -s http://localhost:3000/api/data
 
 # UPDATE
