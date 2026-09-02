@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 
 public class RESTTest {
 
@@ -16,9 +15,16 @@ public class RESTTest {
 
     @BeforeEach
     void getCookie() {
-        sessionValue = login();
+        sessionValue = login("test1", "1234");
         // clearSessionsFromPreviousRun();
     }
+
+//    @Test
+//    void userTest1CannotDeleteUserTest2sSession() {
+//        given()
+//                .cookie("session", sessionValue)
+//                .
+//    }
 
     @Test
     void getAllSessions() {
@@ -32,20 +38,23 @@ public class RESTTest {
     }
 
     @Test
-    void getSession() {
+    void getSessionReturnsCreatedFields() {
         String id = createSession();
-        getSession(id);
+        getSession(id)
+                .statusCode(200)
+                .body("id", equalTo(id))
+                .body("start", equalTo("09:00"));
     }
 
-    String login() {
+    String login(String username, String password) {
         return given()
                 .contentType(ContentType.JSON)
                 .body("""
 {
-"username": "test1",
-"password": "1234"
+"username": "%s",
+"password": "%s"
 }
-""")
+""".formatted(username, password))
                 .when()
                 .post("http://localhost:3000/api/auth/login")
                 .then()
@@ -53,12 +62,11 @@ public class RESTTest {
                 .extract().cookie("session");
     }
 
-    void getSession(String id) {
-        given()
+    ValidatableResponse getSession(String id) {
+       return given()
                 .cookie("session", sessionValue)
                 .get("http://localhost:3000/api/sessions/" + id)
-                .then()
-                .log().all();
+                .then();
     }
 
     String createSession() {
@@ -68,8 +76,8 @@ public class RESTTest {
                 .body("""
 {
 "date":"2026-09-01",
-"start":"18:00",
-"end":"19:00",
+"start":"09:00",
+"end":"10:00",
 "categoryName":"study",
 "note":"to be deleted"
 }
