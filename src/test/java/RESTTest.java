@@ -19,23 +19,6 @@ public class RESTTest {
         // clearSessionsFromPreviousRun();
     }
 
-//    @Test
-//    void userTest1CannotDeleteUserTest2sSession() {
-//        given()
-//                .cookie("session", sessionValue)
-//                .
-//    }
-
-    @Test
-    void getAllSessions() {
-        given()
-                .cookie("session", sessionValue)
-                .get("http://localhost:3000/api/data")
-                .then()
-                .log().all()
-                .statusCode(200)
-                .body("sessions", notNullValue());
-    }
 
     @Test
     void getSessionReturnsCreatedFields() {
@@ -88,21 +71,5 @@ public class RESTTest {
                 .extract().path("id");
     }
 
-/*    void clearSessionsFromPreviousRun() {
-        List<String> ids = given()
-                .cookie("session", sessionValue)
-                .get("http://localhost:3000/api/data")
-                .then()
-                .statusCode(200)
-                .extract().path("sessions.id");
-
-        for (String id : ids) {
-            given()
-                    .cookie("session", sessionValue)
-                    .delete("http://localhost:3000/api/sessions/" + id)
-                    .then()
-                    .statusCode(200);
-        }
-    }*/
 
 }
