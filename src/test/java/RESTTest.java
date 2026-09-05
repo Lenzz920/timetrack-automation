@@ -1,15 +1,13 @@
 import api.AuthApi;
 import api.SessionsApi;
-import io.restassured.http.ContentType;
-import io.restassured.response.ValidatableResponse;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RESTTest {
 
@@ -28,6 +26,33 @@ public class RESTTest {
                 .statusCode(200)
                 .body("id", equalTo(id))
                 .body("start", equalTo("09:00"));
+    }
+
+    @Test
+    void getSessionThatWasDeleted() {
+        String id = sessions.createSession();
+        sessions.getSession(id)
+        .statusCode(200)
+                .body("id", equalTo(id))
+                .body("start", equalTo("09:00"));
+        sessions.deleteSession(id);
+        sessions.getSession(id)
+                .statusCode(404);
+    }
+
+    @Test
+    void createdSessionAppearsInGetAll() {
+        String id = sessions.createSession();
+        List<String> ids = sessions.getAllSessions().extract().path("sessions.id");
+        assertTrue(ids.contains(id));
+    }
+
+    @Test
+    void deletedSessionIsGoneFromGetAll() {
+        String id = sessions.createSession();
+        sessions.deleteSession(id);
+        List<String> ids = sessions.getAllSessions().extract().path("sessions.id");
+        assertFalse(ids.contains(id));
     }
 
 }
