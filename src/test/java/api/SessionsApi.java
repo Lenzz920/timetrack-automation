@@ -16,6 +16,24 @@ public class SessionsApi {
         this.cookie = cookie;
     }
 
+    public String createSession(String sessionDate, String startTime, String endTime, String note, String categoryName) {
+        return request()
+                .contentType(ContentType.JSON)
+                .body("""
+{
+"date":"%s",
+"start":"%s",
+"end":"%s",
+"note":"%s",
+"categoryName":"%s"
+}
+""".formatted(sessionDate, startTime, endTime, note, categoryName))
+                .post(BASE + "/api/sessions")
+                .then()
+                .statusCode(200)
+                .extract().path("id");
+    }
+
     public String createSession() {
         return request()
                 .contentType(ContentType.JSON)
@@ -24,8 +42,8 @@ public class SessionsApi {
 "date":"2026-09-05",
 "start":"09:00",
 "end":"10:00",
-"categoryName":"study",
-"note":"to be deleted"
+"note":"to be deleted",
+"categoryName":"study"
 }
 """)
                 .post(BASE + "/api/sessions")

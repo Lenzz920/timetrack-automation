@@ -21,20 +21,28 @@ public class RESTTest {
 
     @Test
     void getSessionReturnsCreatedFields() {
-        String id = sessions.createSession();
+        String sessionDate = "2026-09-07";
+        String startTime = "09:00";
+        String endTime = "10:00";
+        String note = "dynamic test";
+        String categoryName = "Study";
+
+        String id = sessions.createSession(sessionDate, startTime, endTime, note, categoryName);
         sessions.getSession(id)
                 .statusCode(200)
                 .body("id", equalTo(id))
-                .body("start", equalTo("09:00"));
+                .body("date", equalTo(sessionDate))
+                .body("start", equalTo(startTime))
+                .body("end", equalTo(endTime))
+                .body("note", equalTo(note))
+                .body("categoryName", equalTo(categoryName));
     }
 
     @Test
     void getSessionThatWasDeleted() {
         String id = sessions.createSession();
         sessions.getSession(id)
-        .statusCode(200)
-                .body("id", equalTo(id))
-                .body("start", equalTo("09:00"));
+        .statusCode(200);
         sessions.deleteSession(id);
         sessions.getSession(id)
                 .statusCode(404);
