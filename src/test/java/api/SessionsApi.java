@@ -17,19 +17,7 @@ public class SessionsApi {
     }
 
     public String createSession(String sessionDate, String startTime, String endTime, String note, String categoryName) {
-        return request()
-                .contentType(ContentType.JSON)
-                .body("""
-{
-"date":"%s",
-"start":"%s",
-"end":"%s",
-"note":"%s",
-"categoryName":"%s"
-}
-""".formatted(sessionDate, startTime, endTime, note, categoryName))
-                .post(BASE + "/api/sessions")
-                .then()
+        return postSession(sessionDate, startTime, endTime, note, categoryName)
                 .statusCode(200)
                 .extract().path("id");
     }
@@ -50,6 +38,22 @@ public class SessionsApi {
                 .then()
                 .statusCode(200)
                 .extract().path("id");
+    }
+
+    public ValidatableResponse postSession(String sessionDate, String startTime, String endTime, String note, String categoryName) {
+        return request()
+                .contentType(ContentType.JSON)
+                .body("""
+{
+"date":"%s",
+"start":"%s",
+"end":"%s",
+"note":"%s",
+"categoryName":"%s"
+}
+""".formatted(sessionDate, startTime, endTime, note, categoryName))
+                .post(SESSIONS)
+                .then();
     }
 
     public ValidatableResponse deleteSession(String id) {

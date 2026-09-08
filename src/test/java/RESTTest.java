@@ -2,6 +2,8 @@ import api.AuthApi;
 import api.SessionsApi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.List;
 
@@ -17,6 +19,17 @@ public class RESTTest {
     void setUp() {
         String cookie = AuthApi.login("test1", "1234");
         sessions = new SessionsApi(cookie);
+    }
+
+    @ParameterizedTest(name = "{1} to {2} -> {3}")
+    @CsvSource({
+            "2026-09-09, 09:00, 10:00, 200",
+            "2026-09-09, 10:00, 09:00, 400",
+            "2026-09-09, 10:00, 10:00, 400"
+    })
+    void createSessionHonoursTimeRule(String date, String startTime, String endTime, int expectedStatusCode) {
+        sessions.postSession(date, startTime, endTime, "param test", "Study")
+                .statusCode(expectedStatusCode);
     }
 
     @Test
