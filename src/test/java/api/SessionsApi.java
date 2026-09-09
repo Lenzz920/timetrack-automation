@@ -74,6 +74,22 @@ public class SessionsApi {
                 .then();
     }
 
+    public ValidatableResponse updateSession(String id, String sessionDate, String startTime, String endTime, String note, String categoryName) {
+        return request()
+                .contentType(ContentType.JSON)
+                .body("""
+{
+"date": "%s",
+"start": "%s",
+"end": "%s",
+"note": "%s",
+"categoryName": "%s"
+}
+""".formatted(sessionDate, startTime, endTime, note, categoryName))
+                .put(SESSIONS + id)
+                .then();
+    }
+
     public RequestSpecification request() {
         return given().cookie("session", cookie);
     }
