@@ -1,0 +1,80 @@
+[33mcommit b1cb6afd6442aa479d91b5f366a75b7037ae5454[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: blur9 <nikohightower@gmail.com>
+Date:   Wed Sep 9 10:20:39 2026 +0300
+
+    Added put method
+    Changed the @BeforeEach to create 2 users - owner and nonOwner. Used them in cross user tests - cannotReadSessionAsANonOwner, cannotUpdateSessionAsANonOwner and cannotDeleteSessionAsANonOwner, also created a Test for updatingSession
+
+[33mcommit 0fe000de9abaabdbae362f598388f73354282ae6[m
+Author: blur9 <nikohightower@gmail.com>
+Date:   Tue Sep 8 10:02:51 2026 +0300
+
+    Add postSession and parameterised tests for the time rule. Add post method, which doesn't have assertion for statusCode. It's used for negative tests, where it should validate that end time can't be before start time. Kept the previous one that also asserts the statusCode.
+    
+    Added Parameterized Tests cases for time validation
+
+[33mcommit eb77d7d8fffa6349fe5472e34603719c6c984c8c[m
+Author: blur9 <nikohightower@gmail.com>
+Date:   Mon Sep 7 09:50:57 2026 +0300
+
+    Overloaded createSession, with another one that takes parameters, used the parameters one for getSessionReturnsCreatedFields, and verified each field, the other Tests use the non parameterized method, because they don't do field validations
+
+[33mcommit 0c6467da3813694d7de28ac9e184e5b2eceec566[m
+Author: blur9 <nikohightower@gmail.com>
+Date:   Sat Sep 5 09:31:46 2026 +0300
+
+    Add getSessions method, and 2 Tests createdSessionAppearsInGetAll and deletedSessionIsGoneFromGetAll.
+    
+    Refactored the code, so instead of writing the cookie logic in each method, it gets it from the request() method. Also, added the URL in BASE and SESSIONS constants.
+
+[33mcommit 981fd166a88b9192bcd0b82d9900732e113c4745[m
+Author: blur9 <nikohightower@gmail.com>
+Date:   Fri Sep 4 16:02:09 2026 +0300
+
+    Moved get and post method to dedicated folders, as login, and leaving the Test class with only setup and one Test.
+
+[33mcommit 970b80f12b8c7eddbe0ff1e10b1064554c3eef62[m
+Author: blur9 <nikohightower@gmail.com>
+Date:   Thu Sep 3 15:55:37 2026 +0300
+
+    Refactor the class, removed methods and tests that are not needed now
+
+[33mcommit 04292d7b45549b8c7d283737722eba09be7a6083[m
+Author: blur9 <nikohightower@gmail.com>
+Date:   Wed Sep 2 16:07:42 2026 +0300
+
+    login() now takes parameters, instead of being hardcoded/
+    
+    getSession() is renamed to getSessionReturnsCreatedFields() and now asserts fields from the created session
+    
+    started writing test userTest1CannotDeleteUserTest2sSession()
+
+[33mcommit bbf49d6e81c48f7218c3111ac2b40cae6452d6e4[m
+Author: blur9 <nikohightower@gmail.com>
+Date:   Tue Sep 1 16:03:25 2026 +0300
+
+    Extracting methods (helpers?) and using them inside the Tests, rather then writing code inside of the Tests
+
+[33mcommit fae193751fc210aead858866da178894f434c624[m
+Author: blur9 <nikohightower@gmail.com>
+Date:   Mon Aug 31 17:27:14 2026 +0300
+
+    Add login method, using cookie in the other methods via BeforeEach
+
+[33mcommit 0d642ffdae3848a265876d9224f53fdf6b87bcaa[m
+Author: blur9 <nikohightower@gmail.com>
+Date:   Sat Aug 29 21:20:54 2026 +0300
+
+    Adding a API.md document file
+
+[33mcommit e766df1e93cdd859b5cd9f458c94ea6360a3fec4[m
+Author: blur9 <nikohightower@gmail.com>
+Date:   Sat Aug 29 21:16:18 2026 +0300
+
+    Add post and get tests from scratch, with the goal to understand how they work.
+
+[33mcommit b36b67425a3248bde3e87e1021b8713dc9f9447d[m
+Author: blur9 <nikohightower@gmail.com>
+Date:   Sat Aug 29 10:50:48 2026 +0300
+
+    Initial commit

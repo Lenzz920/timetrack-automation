@@ -11,13 +11,26 @@ public class SessionsApi {
     String cookie;
     private static final String BASE = "http://localhost:3000";
     private static final String SESSIONS = BASE + "/api/sessions/";
+    private String toJson(SessionData sessionData) {
+        return """
+{
+"date":"%s",
+"start":"%s",
+"end":"%s",
+"note":"%s",
+"categoryName":"%s"
+}
+""".formatted(sessionData.date(), sessionData.start(), sessionData.end(), sessionData.note(), sessionData.categoryName());
+    }
 
     public SessionsApi(String cookie) {
         this.cookie = cookie;
     }
 
-    public String createSession(String sessionDate, String startTime, String endTime, String note, String categoryName) {
-        return postSession(sessionDate, startTime, endTime, note, categoryName)
+
+
+    public String createSession(SessionData sessionData) {
+        return postSession(sessionData)
                 .statusCode(200)
                 .extract().path("id");
     }
@@ -40,18 +53,10 @@ public class SessionsApi {
                 .extract().path("id");
     }
 
-    public ValidatableResponse postSession(String sessionDate, String startTime, String endTime, String note, String categoryName) {
+    public ValidatableResponse postSession(SessionData sessionData) {
         return request()
                 .contentType(ContentType.JSON)
-                .body("""
-{
-"date":"%s",
-"start":"%s",
-"end":"%s",
-"note":"%s",
-"categoryName":"%s"
-}
-""".formatted(sessionDate, startTime, endTime, note, categoryName))
+                .body(toJson(sessionData))
                 .post(SESSIONS)
                 .then();
     }
@@ -74,18 +79,10 @@ public class SessionsApi {
                 .then();
     }
 
-    public ValidatableResponse updateSession(String id, String sessionDate, String startTime, String endTime, String note, String categoryName) {
+    public ValidatableResponse updateSession(String id, SessionData sessionData) {
         return request()
                 .contentType(ContentType.JSON)
-                .body("""
-{
-"date": "%s",
-"start": "%s",
-"end": "%s",
-"note": "%s",
-"categoryName": "%s"
-}
-""".formatted(sessionDate, startTime, endTime, note, categoryName))
+                .body(toJson(sessionData))
                 .put(SESSIONS + id)
                 .then();
     }
