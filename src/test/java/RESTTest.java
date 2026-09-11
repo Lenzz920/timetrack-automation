@@ -4,12 +4,9 @@ import api.SessionsApi;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RESTTest {
@@ -23,6 +20,7 @@ public class RESTTest {
         nonOwner = new SessionsApi(AuthApi.login("test2", "1234"));
     }
 
+//    @Disabled("not migrated to SessionData")
 //    @ParameterizedTest(name = "{1} to {2} -> {3}")
 //    @CsvSource({
 //            "2026-09-09, 09:00, 10:00, 200",
@@ -34,6 +32,7 @@ public class RESTTest {
 //                .statusCode(expectedStatusCode);
 //    }
 
+//    @Disabled("is not migrated to SessionData")
 //    @Test
 //    void getSessionReturnsCreatedFields() {
 //        String sessionDate = "2026-09-07";
@@ -106,6 +105,7 @@ public class RESTTest {
         assertSessionMatches(owner.getSession(id), id, ownerSessionData);
     }
 
+//    @Disabled("not migrated to SessionData")
 //    @Test
 //    void sessionGetsUpdated() {
 //        String sessionDate = "2026-09-07";

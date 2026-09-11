@@ -13,3 +13,10 @@ curl -i -X DELETE http://localhost:3000/api/sessions/<id>
 
 # is an id still present?
 curl -s http://localhost:3000/api/data | grep -c "<id>"
+
+# get cookie and pass it ot a request
+curl -c jar.txt -X POST http://localhost:3000/api/auth/login \
+-H "Content-Type: application/json" \
+-d '{"username":"test1","password":"1234"}'
+
+curl -b jar.txt -i -X ...

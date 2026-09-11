@@ -10,16 +10,17 @@ public class AuthApi {
         return given()
                 .contentType(ContentType.JSON)
                 .body("""
-{
-"username": "%s",
-"password": "%s"
-}
-""".formatted(username, password))
+                        {
+                        "username": "%s",
+                        "password": "%s"
+                        }
+                        """.formatted(username, password))
                 .when()
                 .post("http://localhost:3000/api/auth/login")
                 .then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .extract().cookie("session");
     }
-
 }
+

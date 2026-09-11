@@ -49,6 +49,7 @@ public class SessionsApi {
 """)
                 .post(BASE + "/api/sessions")
                 .then()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .extract().path("id");
     }
@@ -58,25 +59,29 @@ public class SessionsApi {
                 .contentType(ContentType.JSON)
                 .body(toJson(sessionData))
                 .post(SESSIONS)
-                .then();
+                .then()
+                .log().ifValidationFails();
     }
 
     public ValidatableResponse deleteSession(String id) {
         return request()
                 .delete(SESSIONS  + id)
-                .then();
+                .then()
+                .log().ifValidationFails();
     }
 
     public ValidatableResponse getSession(String id) {
         return request()
                 .get(SESSIONS + id)
-                .then();
+                .then()
+                .log().ifValidationFails();
     }
 
     public ValidatableResponse getAllSessions() {
         return request()
                 .get( BASE + "/api/data")
-                .then();
+                .then()
+                .log().ifValidationFails();
     }
 
     public ValidatableResponse updateSession(String id, SessionData sessionData) {
@@ -84,7 +89,8 @@ public class SessionsApi {
                 .contentType(ContentType.JSON)
                 .body(toJson(sessionData))
                 .put(SESSIONS + id)
-                .then();
+                .then()
+                .log().ifValidationFails();
     }
 
     public RequestSpecification request() {
