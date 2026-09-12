@@ -20,3 +20,19 @@ curl -c jar.txt -X POST http://localhost:3000/api/auth/login \
 -d '{"username":"test1","password":"1234"}'
 
 curl -b jar.txt -i -X ...
+
+
+curl -c jar.txt -X POST http://localhost:3000/api/auth/login \
+-H "Content-Type: application/json" \
+-d '{"username":"test1","password":"1234"}'
+
+curl -b jar.txt -i -X POST http://localhost:3000/api/sessions \
+-H "Content-Type: application/json" \
+-d '{"date": "2026-09-09", "start": "09:00", "end": "02:00", "categoryName": "Study", "note": "invalid session"}'
+
+curl -b jar.txt -i -X PUT http://localhost:3000/api/sessions/smty4jjpapjb3an \
+-H "Content-Type: application/json" \
+-d '{"date":"2026-09-09","start":"09:00","end":"02:00","categoryName":"Study","note":"put probe"}'
+
+curl -b jar.txt -s http://localhost:3000/api/data
+

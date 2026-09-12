@@ -1,12 +1,14 @@
 import api.AuthApi;
 import api.SessionData;
 import api.SessionsApi;
+import api.WeekNotesApi;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RESTTest {
@@ -103,6 +105,18 @@ public class RESTTest {
                 .statusCode(404);
 
         assertSessionMatches(owner.getSession(id), id, ownerSessionData);
+    }
+
+    @Test
+    void canCreateWeekNoteAndReadItAsOwner() {
+        String date = "2026-09-14";
+        String note = "this is a note generated from test";
+        WeekNotesApi owner = new WeekNotesApi(AuthApi.login("test1", "1234"));
+
+        owner.updateWeekNotes(date, note);
+        owner.getWeekNotes(date)
+                .statusCode(200)
+                .body("text", equalTo(note));
     }
 
 //    @Disabled("not migrated to SessionData")

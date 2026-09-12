@@ -8,7 +8,7 @@ import static io.restassured.RestAssured.given;
 
 public class SessionsApi {
 
-    String cookie;
+    private String cookie;
     private static final String BASE = "http://localhost:3000";
     private static final String SESSIONS = BASE + "/api/sessions/";
     private String toJson(SessionData sessionData) {
