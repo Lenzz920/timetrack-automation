@@ -5,6 +5,8 @@ import api.WeekNotesApi;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.*;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.List;
 
@@ -22,17 +24,17 @@ public class RESTTest {
         nonOwner = new SessionsApi(AuthApi.login("test2", "1234"));
     }
 
-//    @Disabled("not migrated to SessionData")
-//    @ParameterizedTest(name = "{1} to {2} -> {3}")
-//    @CsvSource({
-//            "2026-09-09, 09:00, 10:00, 200",
-//            "2026-09-09, 10:00, 09:00, 400",
-//            "2026-09-09, 10:00, 10:00, 400"
-//    })
-//    void createSessionHonoursTimeRule(String date, String startTime, String endTime, int expectedStatusCode) {
-//        owner.postSession(date, startTime, endTime, "param test", "Study")
-//                .statusCode(expectedStatusCode);
-//    }
+    @ParameterizedTest(name = "{1} to {2} -> {3}")
+    @CsvSource({
+            "2026-09-09, 09:00, 10:00, 200",
+            "2026-09-09, 10:00, 09:00, 400",
+            "2026-09-09, 10:00, 10:00, 400"
+    })
+    void createSessionHonoursTimeRule(String date, String startTime, String endTime, int expectedStatusCode) {
+        SessionData sessionData = new SessionData(date, startTime, endTime, "param test", "Study");
+        owner.postSession(sessionData)
+                .statusCode(expectedStatusCode);
+    }
 
     @Test
     void getSessionReturnsCreatedFields() {
@@ -106,34 +108,17 @@ public class RESTTest {
                 .body("text", equalTo(note));
     }
 
-//    @Disabled("not migrated to SessionData")
-//    @Test
-//    void sessionGetsUpdated() {
-//        String sessionDate = "2026-09-07";
-//        String startTime = "09:00";
-//        String endTime = "10:00";
-//        String note = "dynamic test";
-//        String categoryName = "Study";
-//
-//        String updatedSessionDate = "2026-10-12";
-//        String updatedStartTime = "12:34";
-//        String updatedEndTime = "13:45";
-//        String updatedNote = "new note";
-//        String updatedCategoryName = "Work";
-//
-//        String id = owner.createSession(sessionDate, startTime, endTime, note, categoryName);
-//        owner.updateSession(id, updatedSessionDate, updatedStartTime, updatedEndTime, updatedNote, updatedCategoryName)
-//                .statusCode(200);
-//
-//        owner.getSession(id)
-//                .statusCode(200)
-//                .body("id", equalTo(id))
-//                .body("date", equalTo(updatedSessionDate))
-//                .body("start", equalTo(updatedStartTime))
-//                .body("end", equalTo(updatedEndTime))
-//                .body("note", equalTo(updatedNote))
-//                .body("categoryName", equalTo(updatedCategoryName));
-//    }
+    @Test
+    void sessionGetsUpdated() {
+        SessionData originalSessionData = new SessionData("2026-09-07", "09:00", "10:00", "dynamic test", "Study");
+        SessionData updatedSessionData = new SessionData("2026-10-12", "12:34", "13:45", "new note", "Work");
+
+        String id = owner.createSession(originalSessionData);
+        owner.updateSession(id, updatedSessionData)
+                .statusCode(200);
+
+        assertSessionMatches(owner.getSession(id), id, updatedSessionData);
+    }
 
     private void assertSessionMatches(ValidatableResponse response, String id, SessionData expected) {
         var body = response.statusCode(200).extract();
