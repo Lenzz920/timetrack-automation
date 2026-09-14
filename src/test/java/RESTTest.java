@@ -34,25 +34,12 @@ public class RESTTest {
 //                .statusCode(expectedStatusCode);
 //    }
 
-//    @Disabled("is not migrated to SessionData")
-//    @Test
-//    void getSessionReturnsCreatedFields() {
-//        String sessionDate = "2026-09-07";
-//        String startTime = "09:00";
-//        String endTime = "10:00";
-//        String note = "dynamic test";
-//        String categoryName = "Study";
-//
-//        String id = owner.createSession();
-//        owner.getSession(id)
-//                .statusCode(200)
-//                .body("id", equalTo(id))
-//                .body("date", equalTo(sessionDate))
-//                .body("start", equalTo(startTime))
-//                .body("end", equalTo(endTime))
-//                .body("note", equalTo(note))
-//                .body("categoryName", equalTo(categoryName));
-//    }
+    @Test
+    void getSessionReturnsCreatedFields() {
+        SessionData ownerSessionData = new SessionData("2026-09-07", "09:00", "10:00", "dynamic test", "Study");
+        String id = owner.createSession(ownerSessionData);
+        assertSessionMatches(owner.getSession(id), id, ownerSessionData);
+    }
 
     @Test
     void getSessionThatWasDeleted() {
