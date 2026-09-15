@@ -27,8 +27,6 @@ public class SessionsApi {
         this.cookie = cookie;
     }
 
-
-
     public String createSession(SessionData sessionData) {
         return postSession(sessionData)
                 .statusCode(200)

@@ -21,7 +21,6 @@ curl -c jar.txt -X POST http://localhost:3000/api/auth/login \
 
 curl -b jar.txt -i -X ...
 
-
 curl -c jar.txt -X POST http://localhost:3000/api/auth/login \
 -H "Content-Type: application/json" \
 -d '{"username":"test1","password":"1234"}'

@@ -2,7 +2,12 @@ import api.AuthApi;
 import api.SessionData;
 import api.SessionsApi;
 import api.WeekNotesApi;
+import io.restassured.RestAssured;
+import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
+import io.restassured.specification.ResponseSpecification;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.*;
@@ -10,6 +15,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.List;
 
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,6 +23,12 @@ public class RESTTest {
 
     SessionsApi owner;
     SessionsApi nonOwner;
+    private static final ResponseSpecification jsonResponse = new ResponseSpecBuilder().expectContentType(ContentType.JSON).build();
+
+    @BeforeAll
+    static void specs() {
+        RestAssured.responseSpecification = jsonResponse;
+    }
 
     @BeforeEach
     void setUp() {
