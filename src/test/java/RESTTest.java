@@ -9,6 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
@@ -135,6 +136,17 @@ public class RESTTest {
         owner.getWeekNotes(date)
                 .statusCode(200)
                 .body("text", equalTo(note));
+    }
+
+    @Disabled("the app still accepts non-Monday dates to update a week note, should be fixed")
+    @Test
+    void weekNoteStartMustBeAMonday() {
+        String date = "2026-09-16";
+        String note = "negative test " + UUID.randomUUID();
+        WeekNotesApi owner = new WeekNotesApi(AuthApi.login("test1", "1234"));
+
+        owner.updateWeekNotes(date, note).statusCode(400);
+        assertNotEquals(note, owner.getWeekNotes(date).extract().body().path("text"));
     }
 
     @Test
