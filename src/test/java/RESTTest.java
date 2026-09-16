@@ -57,6 +57,15 @@ public class RESTTest {
     }
 
     @Test
+    void deleteIsIdempotent() {
+        String id = owner.createSession();
+        owner.deleteSession(id).statusCode(200);
+        owner.getSession(id).statusCode(404);
+        owner.deleteSession(id).statusCode(404);
+        owner.getSession(id).statusCode(404);
+    }
+
+    @Test
     void getSessionReturnsCreatedFields() {
         SessionData ownerSessionData = new SessionData("2026-09-07", "09:00", "10:00", "dynamic test", "Study");
         String id = owner.createSession(ownerSessionData);
