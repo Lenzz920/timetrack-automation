@@ -1,7 +1,4 @@
-import api.AuthApi;
-import api.SessionData;
-import api.SessionsApi;
-import api.WeekNotesApi;
+import api.*;
 import io.restassured.RestAssured;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
@@ -44,6 +41,19 @@ public class RESTTest {
         SessionData sessionData = new SessionData(date, startTime, endTime, "param test", "Study");
         owner.postSession(sessionData)
                 .statusCode(expectedStatusCode);
+    }
+
+    @Test
+    void updateIsIdempotent() {
+        SessionData sessionData = new SessionData("2026-09-14", "10:00", "11:00", "idempotent", "Work");
+        String id = owner.createSession();
+
+        owner.updateSession(id, sessionData).statusCode(200);
+        String firsUpdate = owner.getSession(id).extract().body().asString();
+
+        owner.updateSession(id, sessionData).statusCode(200);
+        String secondUpdate = owner.getSession(id).extract().body().asString();
+        assertEquals(firsUpdate, secondUpdate);
     }
 
     @Test
