@@ -140,7 +140,6 @@ public class RESTTest {
                 .body("text", equalTo(note));
     }
 
-    @Disabled("the app still accepts non-Monday dates to update a week note, should be fixed")
     @Test
     void weekNoteStartMustBeAMonday() {
         String date = "2026-09-16";
@@ -151,7 +150,6 @@ public class RESTTest {
         assertNotEquals(note, owner.getWeekNotes(date).extract().body().path("text"));
     }
 
-    @Disabled("the app still accepts invalid dates, should be fixed")
     @ParameterizedTest
     @ValueSource(strings = {
             "2026-13-01",

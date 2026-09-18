@@ -23,4 +23,3 @@ public class AuthApi {
                 .extract().cookie("session");
     }
 }
-

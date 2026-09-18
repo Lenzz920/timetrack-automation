@@ -94,5 +94,4 @@ public class SessionsApi {
     public RequestSpecification request() {
         return given().cookie("session", cookie);
     }
-
 }
