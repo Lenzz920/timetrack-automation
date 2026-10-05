@@ -1,7 +1,11 @@
-import api.*;
+import api.AuthApi;
+import api.SessionData;
+import api.SessionsApi;
+import api.WeekNotesApi;
 import io.restassured.RestAssured;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.ResponseSpecification;
 import org.junit.jupiter.api.*;
@@ -10,9 +14,9 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
+import static api.AuthApi.login;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,8 +34,8 @@ public class RESTTest {
 
     @BeforeEach
     void setUp() {
-        owner = new SessionsApi(AuthApi.login("test1", "1234"));
-        nonOwner = new SessionsApi(AuthApi.login("test2", "1234"));
+        owner = new SessionsApi(login("test1", "1234"));
+        nonOwner = new SessionsApi(login("test2", "1234"));
     }
 
     @ParameterizedTest(name = "{1} to {2} -> {3}")
@@ -116,6 +120,31 @@ public class RESTTest {
                 .statusCode(404);
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "invalidUser, 1234",
+            "test1, 2345",
+            "'' , ''"
+    })
+    void negativeLoginTestsFail(String username, String password) {
+        Response loginResponse = AuthApi.loginResponse(username, password);
+        assertEquals(401, loginResponse.getStatusCode());
+        assertEquals("Invalid username or password.", loginResponse.path("error"));
+
+    }
+
+    @Test
+    void positiveLoginTestSavesCookie() {
+        Response loginResponse = AuthApi.loginResponse("test1", "1234");
+        assertEquals(200, loginResponse.getStatusCode());
+        assertNotNull(loginResponse.cookie("session"));
+
+        SessionsApi validUser = new SessionsApi(loginResponse.cookie("session"));
+        Response me = validUser.whoAmI();
+        assertEquals(200, me.getStatusCode());
+        assertEquals("test2", me.path("username"));
+    }
+
     @Test
     void cannotUpdateSessionAsANonOwner() {
         SessionData ownerSessionData = new SessionData("2026-09-07", "09:00", "10:00", "shouldn't be changed", "Study");
@@ -132,7 +161,7 @@ public class RESTTest {
     void canCreateWeekNoteAndReadItAsOwner() {
         String date = "2026-09-14";
         String note = "this is a note generated from test";
-        WeekNotesApi owner = new WeekNotesApi(AuthApi.login("test1", "1234"));
+        WeekNotesApi owner = new WeekNotesApi(login("test1", "1234"));
 
         owner.updateWeekNotes(date, note);
         owner.getWeekNotes(date)
@@ -144,7 +173,7 @@ public class RESTTest {
     void weekNoteStartMustBeAMonday() {
         String date = "2026-09-16";
         String note = "negative test " + UUID.randomUUID();
-        WeekNotesApi owner = new WeekNotesApi(AuthApi.login("test1", "1234"));
+        WeekNotesApi owner = new WeekNotesApi(login("test1", "1234"));
 
         owner.updateWeekNotes(date, note).statusCode(400);
         assertNotEquals(note, owner.getWeekNotes(date).extract().body().path("text"));
@@ -160,7 +189,7 @@ public class RESTTest {
     })
     void weekStartMustBeAValidDate(String invalidDate) {
         String note = "negative test " + UUID.randomUUID();
-        WeekNotesApi owner = new WeekNotesApi(AuthApi.login("test1", "1234"));
+        WeekNotesApi owner = new WeekNotesApi(login("test1", "1234"));
 
         owner.updateWeekNotes(invalidDate, note).statusCode(400);
         assertNotEquals(note, owner.getWeekNotes(invalidDate).extract().body().path("text"));
@@ -172,8 +201,8 @@ public class RESTTest {
         String nonOwnerNote = "non owner " + UUID.randomUUID();
         String date = "2026-10-05";
 
-        WeekNotesApi owner = new WeekNotesApi(AuthApi.login("test1", "1234"));
-        WeekNotesApi nonOwner = new WeekNotesApi(AuthApi.login("test2", "1234"));
+        WeekNotesApi owner = new WeekNotesApi(login("test1", "1234"));
+        WeekNotesApi nonOwner = new WeekNotesApi(login("test2", "1234"));
 
         owner.updateWeekNotes(date, ownerNote).statusCode(200);
         nonOwner.updateWeekNotes(date, nonOwnerNote).statusCode(200);

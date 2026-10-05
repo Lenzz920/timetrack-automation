@@ -1,6 +1,7 @@
 package api;
 
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
@@ -91,7 +92,12 @@ public class SessionsApi {
                 .log().ifValidationFails();
     }
 
-    public RequestSpecification request() {
-        return given().cookie("session", cookie);
+    public Response whoAmI() {
+        return request()
+                .get(BASE + "/api/auth/me");
     }
-}
+
+        public RequestSpecification request () {
+            return given().cookie("session", cookie);
+        }
+    }
