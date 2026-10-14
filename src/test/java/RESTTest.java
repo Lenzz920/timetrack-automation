@@ -50,6 +50,18 @@ public class RESTTest {
                 .statusCode(expectedStatusCode);
     }
 
+    @ParameterizedTest(name = "{0}")
+    @CsvSource({
+            "invalid cookie, invalidCookie",
+            "no cookie,"
+    })
+    void invalidOrMissingCookieIsNotAccepted(String caseName, String cookie) {
+        SessionsApi notLoggedInUser = new SessionsApi(cookie);
+        Response response = notLoggedInUser.whoAmI();
+        assertEquals(401, response.getStatusCode());
+        assertEquals("Not logged in.", response.body().path("error"));
+    }
+
     @Test
     void updateIsIdempotent() {
         SessionData sessionData = new SessionData("2026-09-14", "10:00", "11:00", "idempotent", "Work");

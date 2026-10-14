@@ -98,6 +98,10 @@ public class SessionsApi {
     }
 
         public RequestSpecification request () {
-            return given().cookie("session", cookie);
+            RequestSpecification spec = given();
+            if (cookie != null) {
+                spec.cookie("session", cookie);
+            }
+            return spec;
         }
     }
