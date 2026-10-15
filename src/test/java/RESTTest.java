@@ -19,7 +19,7 @@ import java.util.UUID;
 import static api.AuthApi.login;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
-import static testdata.TestData.*;
+import static testdata.Accounts.*;
 
 @TestMethodOrder(MethodOrderer.Random.class)
 public class RESTTest {

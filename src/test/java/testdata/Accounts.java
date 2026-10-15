@@ -1,7 +1,7 @@
 package testdata;
 
-public final class TestData {
-    private TestData() {}
+public final class Accounts {
+    private Accounts() {}
 
     public static final String OWNER_USERNAME = "test1";
     public static final String OWNER_PASSWORD = "1234";
