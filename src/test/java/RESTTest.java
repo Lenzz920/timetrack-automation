@@ -236,6 +236,11 @@ public class RESTTest {
         assertSessionMatches(owner.getSession(id), id, updatedSessionData);
     }
 
+    @Test
+    void invalidFieldIsReturnsError() {
+
+    }
+
     private static void assertSessionMatches(ValidatableResponse response, String id, SessionData expected) {
         var body = response.statusCode(200).extract();
         assertEquals(id, body.path("id"));

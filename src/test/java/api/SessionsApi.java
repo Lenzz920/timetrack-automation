@@ -54,9 +54,13 @@ public class SessionsApi {
     }
 
     public ValidatableResponse postSession(SessionData sessionData) {
+        return postSessionRaw(toJson(sessionData));
+    }
+
+    public ValidatableResponse postSessionRaw(String body) {
         return request()
                 .contentType(ContentType.JSON)
-                .body(toJson(sessionData))
+                .body(body)
                 .post(SESSIONS)
                 .then()
                 .log().ifValidationFails();
