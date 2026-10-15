@@ -12,7 +12,7 @@ public class SessionsApi {
     private final String cookie;
     private static final String BASE = "http://localhost:3000";
     private static final String SESSIONS = BASE + "/api/sessions/";
-    private String toJson(SessionData sessionData) {
+    private static String toJson(SessionData sessionData) {
         return """
 {
 "date":"%s",

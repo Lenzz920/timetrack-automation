@@ -236,7 +236,7 @@ public class RESTTest {
         assertSessionMatches(owner.getSession(id), id, updatedSessionData);
     }
 
-    private void assertSessionMatches(ValidatableResponse response, String id, SessionData expected) {
+    private static void assertSessionMatches(ValidatableResponse response, String id, SessionData expected) {
         var body = response.statusCode(200).extract();
         assertEquals(id, body.path("id"));
         assertEquals(expected.date(), body.path("date"));
