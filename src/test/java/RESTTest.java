@@ -236,9 +236,20 @@ public class RESTTest {
         assertSessionMatches(owner.getSession(id), id, updatedSessionData);
     }
 
+    @Disabled
     @Test
-    void invalidFieldIsReturnsError() {
+    void invalidFieldInRequestIsNotAccepted() {
+        String json = """
+                {
+                "date": "2026-10-10",
+                "start": "10:00",
+                "end": "11:00",
+                "categoryName": "Study",
+                "notze": "note"
+                }
+                """;
 
+        owner.postSessionRaw(json).statusCode(400);
     }
 
     private static void assertSessionMatches(ValidatableResponse response, String id, SessionData expected) {
