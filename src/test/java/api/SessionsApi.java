@@ -88,9 +88,13 @@ public class SessionsApi {
     }
 
     public ValidatableResponse updateSession(String id, SessionData sessionData) {
+        return updateSessionRaw(id, toJson(sessionData));
+    }
+
+    public ValidatableResponse updateSessionRaw(String id, String body) {
         return request()
                 .contentType(ContentType.JSON)
-                .body(toJson(sessionData))
+                .body(body)
                 .put(SESSIONS + id)
                 .then()
                 .log().ifValidationFails();
