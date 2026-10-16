@@ -236,9 +236,10 @@ public class RESTTest {
         assertSessionMatches(owner.getSession(id), id, updatedSessionData);
     }
 
-    @Disabled
+    @Disabled("b01 unknown fields are accepted in post requests")
     @Test
-    void invalidFieldInRequestIsNotAccepted() {
+    void unknownFieldInRequestIsNotAcceptedWhenSessionIsCreated() {
+        //notze is sent instead of note to test unknown field behavior
         String json = """
                 {
                 "date": "2026-10-10",
@@ -250,6 +251,25 @@ public class RESTTest {
                 """;
 
         owner.postSessionRaw(json).statusCode(400);
+    }
+
+    @Disabled("b01 unknown fields are accepted in put requests")
+    @Test
+    void unknownFieldInRequestIsNotAcceptedWhenSessionIsUpdated() {
+        //notze is sent instead of note to test unknown field behavior
+        String json = """
+                {
+                "date": "2026-09-07",
+                "start": "09:00",
+                "end": "10:00",
+                "categoryName": "Study",
+                "notze": "note"
+                }
+                """;
+        SessionData originalSessionData = new SessionData("2026-09-07", "09:00", "10:00", "dynamic test", "Study");
+        String id = owner.createSession(originalSessionData);
+        owner.updateSessionRaw(id, json).statusCode(400);
+        assertSessionMatches(owner.getSession(id), id, originalSessionData);
     }
 
     private static void assertSessionMatches(ValidatableResponse response, String id, SessionData expected) {
