@@ -236,7 +236,6 @@ public class RESTTest {
         assertSessionMatches(owner.getSession(id), id, updatedSessionData);
     }
 
-    @Disabled("b01 unknown fields are accepted in post requests")
     @Test
     void unknownFieldInRequestIsNotAcceptedWhenSessionIsCreated() {
         //notze is sent instead of note to test unknown field behavior
@@ -253,7 +252,6 @@ public class RESTTest {
         owner.postSessionRaw(json).statusCode(400);
     }
 
-    @Disabled("b01 unknown fields are accepted in put requests")
     @Test
     void unknownFieldInRequestIsNotAcceptedWhenSessionIsUpdated() {
         //notze is sent instead of note to test unknown field behavior
