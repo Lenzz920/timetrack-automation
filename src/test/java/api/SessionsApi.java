@@ -11,7 +11,6 @@ public class SessionsApi {
 
     private final String cookie;
     private static final String BASE = "http://localhost:3000";
-    private static final String SESSIONS = BASE + "/api/sessions/";
     private static String toJson(SessionData sessionData) {
         return """
 {
@@ -46,7 +45,7 @@ public class SessionsApi {
 "categoryName":"study"
 }
 """)
-                .post(BASE + "/api/sessions")
+                .post("/api/sessions")
                 .then()
                 .log().ifValidationFails()
                 .statusCode(200)
@@ -61,28 +60,28 @@ public class SessionsApi {
         return request()
                 .contentType(ContentType.JSON)
                 .body(body)
-                .post(SESSIONS)
+                .post("/api/sessions/")
                 .then()
                 .log().ifValidationFails();
     }
 
     public ValidatableResponse deleteSession(String id) {
         return request()
-                .delete(SESSIONS  + id)
+                .delete("/api/sessions/{id}", id)
                 .then()
                 .log().ifValidationFails();
     }
 
     public ValidatableResponse getSession(String id) {
         return request()
-                .get(SESSIONS + id)
+                .get("/api/sessions/{id}", id)
                 .then()
                 .log().ifValidationFails();
     }
 
     public ValidatableResponse getAllSessions() {
         return request()
-                .get( BASE + "/api/data")
+                .get( "/api/data")
                 .then()
                 .log().ifValidationFails();
     }
@@ -95,18 +94,18 @@ public class SessionsApi {
         return request()
                 .contentType(ContentType.JSON)
                 .body(body)
-                .put(SESSIONS + id)
+                .put("/api/sessions/{id}", id)
                 .then()
                 .log().ifValidationFails();
     }
 
     public Response whoAmI() {
         return request()
-                .get(BASE + "/api/auth/me");
+                .get("/api/auth/me");
     }
 
         public RequestSpecification request () {
-            RequestSpecification spec = given();
+            RequestSpecification spec = given().baseUri(BASE);
             if (cookie != null) {
                 spec.cookie("session", cookie);
             }
