@@ -1,5 +1,6 @@
 package api;
 
+import config.Config;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
@@ -10,7 +11,6 @@ import static io.restassured.RestAssured.given;
 public class SessionsApi {
 
     private final String cookie;
-    private static final String BASE = "http://localhost:3000";
     private static String toJson(SessionData sessionData) {
         return """
 {
@@ -105,7 +105,7 @@ public class SessionsApi {
     }
 
         public RequestSpecification request () {
-            RequestSpecification spec = given().baseUri(BASE);
+            RequestSpecification spec = given().baseUri(Config.BASE_URL);
             if (cookie != null) {
                 spec.cookie("session", cookie);
             }
