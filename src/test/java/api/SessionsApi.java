@@ -1,30 +1,28 @@
 package api;
 
-import config.Config;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import io.restassured.specification.RequestSpecification;
 
-import static io.restassured.RestAssured.given;
+import static api.BaseRequest.request;
 
 public class SessionsApi {
 
-    private final String cookie;
+    private final String COOKIE;
+
     private static String toJson(SessionData sessionData) {
         return """
-{
-"date":"%s",
-"start":"%s",
-"end":"%s",
-"note":"%s",
-"categoryName":"%s"
-}
-""".formatted(sessionData.date(), sessionData.start(), sessionData.end(), sessionData.note(), sessionData.categoryName());
+                {
+                "date":"%s",
+                "start":"%s",
+                "end":"%s",
+                "note":"%s",
+                "categoryName":"%s"
+                }
+                """.formatted(sessionData.date(), sessionData.start(), sessionData.end(), sessionData.note(), sessionData.categoryName());
     }
 
     public SessionsApi(String cookie) {
-        this.cookie = cookie;
+        this.COOKIE = cookie;
     }
 
     public String createSession(SessionData sessionData) {
@@ -34,17 +32,16 @@ public class SessionsApi {
     }
 
     public String createSession() {
-        return request()
-                .contentType(ContentType.JSON)
+        return request(COOKIE)
                 .body("""
-{
-"date":"2026-09-05",
-"start":"09:00",
-"end":"10:00",
-"note":"to be deleted",
-"categoryName":"study"
-}
-""")
+                        {
+                        "date":"2026-09-05",
+                        "start":"09:00",
+                        "end":"10:00",
+                        "note":"to be deleted",
+                        "categoryName":"study"
+                        }
+                        """)
                 .post("/api/sessions")
                 .then()
                 .log().ifValidationFails()
@@ -57,8 +54,7 @@ public class SessionsApi {
     }
 
     public ValidatableResponse postSessionRaw(String body) {
-        return request()
-                .contentType(ContentType.JSON)
+        return request(COOKIE)
                 .body(body)
                 .post("/api/sessions/")
                 .then()
@@ -66,22 +62,22 @@ public class SessionsApi {
     }
 
     public ValidatableResponse deleteSession(String id) {
-        return request()
+        return request(COOKIE)
                 .delete("/api/sessions/{id}", id)
                 .then()
                 .log().ifValidationFails();
     }
 
     public ValidatableResponse getSession(String id) {
-        return request()
+        return request(COOKIE)
                 .get("/api/sessions/{id}", id)
                 .then()
                 .log().ifValidationFails();
     }
 
     public ValidatableResponse getAllSessions() {
-        return request()
-                .get( "/api/data")
+        return request(COOKIE)
+                .get("/api/data")
                 .then()
                 .log().ifValidationFails();
     }
@@ -91,8 +87,7 @@ public class SessionsApi {
     }
 
     public ValidatableResponse updateSessionRaw(String id, String body) {
-        return request()
-                .contentType(ContentType.JSON)
+        return request(COOKIE)
                 .body(body)
                 .put("/api/sessions/{id}", id)
                 .then()
@@ -100,15 +95,7 @@ public class SessionsApi {
     }
 
     public Response whoAmI() {
-        return request()
+        return request(COOKIE)
                 .get("/api/auth/me");
     }
-
-        public RequestSpecification request () {
-            RequestSpecification spec = given().baseUri(Config.BASE_URL);
-            if (cookie != null) {
-                spec.cookie("session", cookie);
-            }
-            return spec;
-        }
-    }
+}

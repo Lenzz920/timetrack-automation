@@ -5,21 +5,21 @@ import io.restassured.response.ValidatableResponse;
 
 public class WeekNotesApi {
 
-    private String cookie;
+    private final String COOKIE;
 
     public WeekNotesApi(String cookie) {
-        this.cookie = cookie;
+        this.COOKIE = cookie;
     }
 
     public ValidatableResponse getWeekNotes(String date) {
-        return BaseRequest.request(cookie)
+        return BaseRequest.request(COOKIE)
                 .get("/api/week-notes/{weekStart}", date)
                 .then()
                 .log().ifValidationFails();
     }
 
     public ValidatableResponse updateWeekNotes(String date, String noteText) {
-        return BaseRequest.request(cookie)
+        return BaseRequest.request(COOKIE)
                 .contentType(ContentType.JSON)
                 .body("""
                         {
