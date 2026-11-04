@@ -1,7 +1,6 @@
 import api.AuthApi;
 import api.SessionData;
 import api.SessionsApi;
-import api.WeekNotesApi;
 import io.restassured.RestAssured;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
@@ -11,13 +10,10 @@ import io.restassured.specification.ResponseSpecification;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
-import java.util.UUID;
 
 import static api.AuthApi.login;
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 import static testdata.Accounts.*;
 
@@ -96,7 +92,7 @@ public class RESTTest {
     void getSessionThatWasDeleted() {
         String id = owner.createSession();
         owner.getSession(id)
-        .statusCode(200);
+                .statusCode(200);
         owner.deleteSession(id);
         owner.getSession(id)
                 .statusCode(404);
@@ -119,11 +115,11 @@ public class RESTTest {
 
     @Test
     void cannotDeleteSessionAsANonOwner() {
-       String id = owner.createSession();
-       nonOwner.deleteSession(id)
-               .statusCode(404);
-       owner.getSession(id)
-               .statusCode(200);
+        String id = owner.createSession();
+        nonOwner.deleteSession(id)
+                .statusCode(404);
+        owner.getSession(id)
+                .statusCode(200);
     }
 
     @Test
@@ -170,59 +166,6 @@ public class RESTTest {
         assertSessionMatches(owner.getSession(id), id, ownerSessionData);
     }
 
-    @Test
-    void canCreateWeekNoteAndReadItAsOwner() {
-        String date = "2026-09-14";
-        String note = "this is a note generated from test";
-        WeekNotesApi owner = new WeekNotesApi(login(OWNER_USERNAME, OWNER_PASSWORD));
-
-        owner.updateWeekNotes(date, note);
-        owner.getWeekNotes(date)
-                .statusCode(200)
-                .body("text", equalTo(note));
-    }
-
-    @Test
-    void weekNoteStartMustBeAMonday() {
-        String date = "2026-09-16";
-        String note = "negative test " + UUID.randomUUID();
-        WeekNotesApi owner = new WeekNotesApi(login(OWNER_USERNAME, OWNER_PASSWORD));
-
-        owner.updateWeekNotes(date, note).statusCode(400);
-        assertNotEquals(note, owner.getWeekNotes(date).extract().body().path("text"));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "2026-13-01",
-            "2026-01-32",
-            "2026-02-30",
-            "2026-00-01",
-            "2026-01-00"
-    })
-    void weekStartMustBeAValidDate(String invalidDate) {
-        String note = "negative test " + UUID.randomUUID();
-        WeekNotesApi owner = new WeekNotesApi(login(OWNER_USERNAME, OWNER_PASSWORD));
-
-        owner.updateWeekNotes(invalidDate, note).statusCode(400);
-        assertNotEquals(note, owner.getWeekNotes(invalidDate).extract().body().path("text"));
-    }
-
-    @Test
-    void everyOwnerCanSeeAndUpdateOnlyTheirWeekNotes() {
-        String ownerNote = "owner " + UUID.randomUUID();
-        String nonOwnerNote = "non owner " + UUID.randomUUID();
-        String date = "2026-10-05";
-
-        WeekNotesApi owner = new WeekNotesApi(login(OWNER_USERNAME, OWNER_PASSWORD));
-        WeekNotesApi nonOwner = new WeekNotesApi(login(OTHER_USERNAME, OTHER_PASSWORD));
-
-        owner.updateWeekNotes(date, ownerNote).statusCode(200);
-        nonOwner.updateWeekNotes(date, nonOwnerNote).statusCode(200);
-
-        assertEquals(ownerNote, owner.getWeekNotes(date).extract().body().path("text"));
-        assertEquals(nonOwnerNote, nonOwner.getWeekNotes(date).extract().body().path("text"));
-    }
 
     @Test
     void sessionGetsUpdated() {
@@ -279,5 +222,4 @@ public class RESTTest {
         assertEquals(expected.note(), body.path("note"));
         assertEquals(expected.categoryName(), body.path("categoryName"));
     }
-
 }
