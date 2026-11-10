@@ -10,7 +10,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static testdata.Accounts.*;
-import static testdata.Accounts.OTHER_PASSWORD;
 
 public class WeekNoteTest {
 
