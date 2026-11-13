@@ -2,11 +2,14 @@ import api.CategoriesApi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
 import static api.AuthApi.login;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static testdata.Accounts.OWNER_PASSWORD;
 import static testdata.Accounts.OWNER_USERNAME;
 
@@ -95,6 +98,30 @@ public class CategoriesTest {
                 .statusCode(200);
     }
 
+    @Test
+    void canDeleteCategory() {
+        owner.createCategory(name)
+                .statusCode(200);
+
+        assertCategoryIsReturned(name, 0);
+
+        owner.deleteCategory(id)
+                .statusCode(200);
+
+        assertCategoryIsNotReturned(name);
+    }
+
+    @Test
+    void deletingCategoryThatDoesntExistDoesntIntroduceChangesToExistingCategories() {
+        List<String> currentCategoryList = new ArrayList<>(getCategoryList());
+
+        owner.deleteCategory(name)
+                .statusCode(404)
+                .body("error", containsString("Category not found."));
+
+        assertEquals(currentCategoryList, getCategoryList());
+    }
+
     private void assertCategoryIsReturned(String name, int sessions) {
         String id = name.toLowerCase(Locale.ROOT);
         String category = "findAll { it.id == '" + id + "' }";
@@ -110,6 +137,13 @@ public class CategoriesTest {
         owner.getCategories()
                 .statusCode(200)
                 .body(category, empty());
+    }
+
+    private List<String> getCategoryList() {
+        return owner.getCategories()
+                .statusCode(200)
+                .extract()
+                .path("id");
     }
 
 }
