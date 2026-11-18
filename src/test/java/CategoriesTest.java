@@ -1,11 +1,9 @@
 import api.CategoriesApi;
+import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 import static api.AuthApi.login;
 import static org.hamcrest.Matchers.*;
@@ -20,6 +18,7 @@ public class CategoriesTest {
     String id;
     String updatedId;
     String secondCategoryId;
+    String userIdTest1;
     CategoriesApi owner;
 
     @BeforeEach
@@ -30,6 +29,7 @@ public class CategoriesTest {
         id = name.toLowerCase(Locale.ROOT);
         updatedId = updatedName.toLowerCase(Locale.ROOT);
         secondCategoryId = secondCategoryName.toLowerCase(Locale.ROOT);
+        userIdTest1 = "umth9ptqactwxdo";
         owner = new CategoriesApi(login(OWNER_USERNAME, OWNER_PASSWORD));
     }
 
@@ -120,6 +120,36 @@ public class CategoriesTest {
                 .body("error", containsString("Category not found."));
 
         assertEquals(currentCategoryList, getCategoryList());
+    }
+
+    @Test
+    void getFullListOfCategory() {
+        owner.createCategory(name)
+                .statusCode(200);
+
+        String category = "find { it.id == '" + id + "' }";
+
+        owner.getCategories()
+                .statusCode(200)
+                .body(category + ".keySet()",
+                        containsInAnyOrder("id", "userId", "name", "color", "sessionCount"))
+                .body(category + ".id", isA(String.class))
+                .body(category + ".userId", isA(String.class))
+                .body(category + ".name", isA(String.class))
+                .body(category + ".color", isA(String.class))
+                .body(category + ".sessionCount", isA(Integer.class));
+
+        owner.deleteCategory(id)
+                .statusCode(200);
+    }
+
+    @Test
+    void cantGetCategoriesWithoutCookie() {
+        CategoriesApi noCookie = new CategoriesApi(null);
+
+        noCookie.getCategories()
+                .statusCode(401)
+                .body("error", containsString("Not logged in."));
     }
 
     private void assertCategoryIsReturned(String name, int sessions) {
