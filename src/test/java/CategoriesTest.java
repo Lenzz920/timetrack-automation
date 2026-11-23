@@ -1,9 +1,11 @@
 import api.CategoriesApi;
-import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 
 import static api.AuthApi.login;
 import static org.hamcrest.Matchers.*;
