@@ -1,10 +1,9 @@
 package api;
 
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 
 import static api.BaseRequest.request;
-import static io.restassured.RestAssured.given;
 
 public class AuthApi {
 
@@ -27,4 +26,13 @@ public class AuthApi {
                 .when()
                 .post("/api/auth/login");
     }
+
+    public static ValidatableResponse logout(String cookie) {
+        return request(cookie)
+                .when()
+                .post("/api/auth/logout")
+                .then()
+                .log().ifValidationFails();
+    }
+
 }
