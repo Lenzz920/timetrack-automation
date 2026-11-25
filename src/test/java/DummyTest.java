@@ -1,22 +1,33 @@
+import config.Config;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import io.restassured.response.ResponseBodyExtractionOptions;
 import io.restassured.response.ValidatableResponse;
+import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DummyTest {
+
+    public static RequestSpecification request(String cookie) {
+        RequestSpecification spec = given()
+                .log().ifValidationFails().
+                baseUri(Config.BASE_URL).
+                contentType(ContentType.JSON);
+
+        if(cookie != null) {
+            spec.cookie("session", cookie);
+        }
+            return spec;
+    }
 
     String username = "test1";
     String password = "1234";
 
     String login(String username, String password) {
-        return given()
-                .contentType(ContentType.JSON)
+        return request(null)
                 .body("""
                         {
                         "username": "%s",
@@ -25,7 +36,7 @@ public class DummyTest {
                         """.formatted(username, password))
                 .log().all()
                 .when()
-                .post("http://localhost:3000/api/auth/login")
+                .post("/api/auth/login")
                 .then()
                 .statusCode(200)
                 .log().all()
@@ -34,11 +45,10 @@ public class DummyTest {
     }
 
     ValidatableResponse getCategories(String cookie) {
-        return given()
-                .cookie("session", cookie)
+        return request(cookie)
                 .log().all()
                 .when()
-                .get("http://localhost:3000/api/categories")
+                .get("/api/categories")
                 .then()
                 .log().all();
     }
